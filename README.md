@@ -66,8 +66,7 @@ Instructions détaillées dans [SETUP.md](SETUP.md).
 ## Source de données
 
 - **Batch** : [yfinance](https://pypi.org/project/yfinance/) (Yahoo Finance), gratuit, sans clé.
-- **Streaming** : [Finnhub](https://finnhub.io) WebSocket (clé gratuite). Repli `STREAM_MODE=simulate`
-  si le marché est fermé (génère des ticks réalistes pour la démo).
+- **Streaming** : [Finnhub](https://finnhub.io) WebSocket (clé gratuite).
 
 ## Évolutions possibles
 

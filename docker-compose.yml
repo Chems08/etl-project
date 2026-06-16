@@ -118,18 +118,11 @@ services:
     command: python -u streaming/producer.py
     volumes:
       - ./streaming:/app/streaming
-      - ./etl:/app/etl
     environment:
       FINNHUB_API_KEY: ${FINNHUB_API_KEY}
-      STREAM_MODE: ${STREAM_MODE}
       TICKERS: ${TICKERS}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: ${KAFKA_TOPIC}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
     depends_on:
       kafka:
         condition: service_healthy

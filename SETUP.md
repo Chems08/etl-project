@@ -16,9 +16,6 @@ cp .env.example .env
 Éditer `.env` :
 
 - `FINNHUB_API_KEY=...` → coller votre clé Finnhub (pour le flux **live**).
-- `STREAM_MODE=live` → vraies cotations.
-  Mettre `STREAM_MODE=simulate` si la démo a lieu **hors heures de marché** (le soir, le week-end) :
-  le producteur génère alors des ticks réalistes, sans dépendre de l'API ni du marché ouvert.
 
 ## 2. Démarrage
 
@@ -88,7 +85,7 @@ docker compose down -v
 | Symptôme | Cause / solution |
 |----------|------------------|
 | Dashboard : « Aucune donnée batch » | Le DAG n'a pas encore tourné → le déclencher dans Airflow. |
-| Zone live vide | Marché fermé en mode `live` → passer à `STREAM_MODE=simulate` et `docker compose up -d producer`. |
-| `producer` en erreur `FINNHUB_API_KEY manquant` | Renseigner la clé dans `.env`, ou utiliser `STREAM_MODE=simulate`. |
+| Zone live vide | Marché fermé → pas de cotations Finnhub ; revenir aux heures d'ouverture. |
+| `producer` en erreur `FINNHUB_API_KEY manquant` | Renseigner la clé dans `.env`. |
 | Airflow lent à démarrer | Normal au 1ᵉʳ run (migration DB). Attendre puis rafraîchir. |
 | Port déjà utilisé (8080/8501/5432) | Adapter les ports dans `docker-compose.yml`. |
