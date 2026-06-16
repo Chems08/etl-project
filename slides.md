@@ -23,7 +23,7 @@ ETL & Pipeline Orchestration — ESILV MSc A4
 
 ## 1 · Cas d'usage
 
-**Problème** : suivre un panier d'actions (AAPL, MSFT, TSLA, AMZN, GOOGL, NVDA, META, JPM)
+**Problème** : suivre un panier d'actions
 au même endroit — historique, indicateurs analytiques et cotations live.
 
 **Données** :
@@ -43,7 +43,6 @@ Finnhub ─► Kafka producer ─► topic ─► consumer ─► realtime ─�
        Airflow orchestre le batch + les transformations SQL
 ```
 
-> (Insérer ici le diagramme `architecture.md` exporté en PNG.)
 
 Stack : Python · PostgreSQL · Kafka · Airflow · SQL · Streamlit · Docker
 

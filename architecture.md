@@ -2,6 +2,21 @@
 
 Flux de données de bout en bout : **source → ETL batch → couche SQL (ELT) → streaming → orchestration → dashboard**.
 
+## Vue d'ensemble (schéma simple)
+
+```mermaid
+flowchart LR
+    SRC["📈 Sources<br/>yfinance · Finnhub"]
+    ETL["⚙️ ETL / Streaming<br/>Python · Kafka"]
+    DB[("🗄️ PostgreSQL<br/>staging · core · analytics · realtime")]
+    DASH["📊 Dashboard<br/>Streamlit"]
+
+    SRC --> ETL --> DB --> DASH
+    AF["🗓️ Airflow"] -. orchestre .-> ETL
+```
+
+## Vue détaillée
+
 ```mermaid
 flowchart LR
     subgraph SRC["Sources"]
