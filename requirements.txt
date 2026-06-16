@@ -1,0 +1,14 @@
+# Pipeline boursier — dépendances Python (services producer / consumer / dashboard / ETL)
+# Airflow utilise sa propre image et n'installe que ces libs légères (voir docker-compose).
+
+yfinance==1.4.1
+pandas==2.2.3
+psycopg2-binary==2.9.10
+SQLAlchemy==2.0.36
+kafka-python==2.0.2
+websocket-client==1.8.0
+requests==2.32.3
+python-dotenv==1.0.1
+streamlit==1.40.2
+streamlit-autorefresh==1.0.1
+plotly==5.24.1
