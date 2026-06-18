@@ -1,0 +1,45 @@
+# ─── Secrets / configuration locale ──────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Outils IA / éditeurs ────────────────────────────────────────────────────
+.claude/
+.cursor/
+.idea/
+.vscode/
+
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ─── Spark / streaming ───────────────────────────────────────────────────────
+spark-checkpoint/
+spark-warehouse/
+.ivy2/
+*.crc
+metastore_db/
+derby.log
+
+# ─── Données / logs / artefacts ──────────────────────────────────────────────
+*.log
+logs/
+data/
+*.csv
+*.parquet
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

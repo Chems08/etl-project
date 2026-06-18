@@ -94,7 +94,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "8080:8080"
+      - "8088:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -134,11 +134,14 @@ services:
       context: .
       dockerfile: streaming/Dockerfile.spark
     command: >
-      spark-submit
+      /opt/spark/bin/spark-submit
       --master local[2]
       --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1
       --conf spark.jars.ivy=/tmp/.ivy2
+      --conf spark.ui.port=4040
       /app/streaming/spark_consumer.py
+    ports:
+      - "4040:4040"   # Spark UI (active tant que le job tourne)
     volumes:
       - ./streaming:/app/streaming
       - ./etl:/app/etl

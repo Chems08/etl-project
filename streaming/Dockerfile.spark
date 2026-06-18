@@ -1,6 +1,7 @@
 # Image du traitement de flux : Spark Structured Streaming + driver Postgres.
-FROM bitnami/spark:3.5.1
+# Image officielle Apache Spark (les tags bitnami/spark ne sont plus publiés).
+FROM apache/spark:3.5.1-python3
 
 USER root
-RUN pip install --no-cache-dir psycopg2-binary==2.9.10
-USER 1001
+RUN pip3 install --no-cache-dir psycopg2-binary==2.9.10 kafka-python==2.0.2
+USER spark

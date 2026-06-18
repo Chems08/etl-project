@@ -58,8 +58,9 @@ cp .env.example .env        # puis renseigner FINNHUB_API_KEY
 docker compose up -d --build
 ```
 
-- Airflow : <http://localhost:8080> (admin / admin) → déclencher le DAG `stock_pipeline`
+- Airflow : <http://localhost:8088> (admin / admin) → déclencher le DAG `stock_pipeline`
 - Dashboard : <http://localhost:8501>
+- Spark UI : <http://localhost:4040> (visible tant que le job streaming tourne)
 
 Instructions détaillées dans [SETUP.md](SETUP.md).
 

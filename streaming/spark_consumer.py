@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
@@ -73,6 +74,34 @@ def ensure_schema() -> None:
     """Crée les schémas et tables du sink si besoin (idempotent)."""
     run_sql_file(os.path.join(ROOT, "sql", "01_init.sql"))
     print("[spark] Schéma realtime prêt.")
+
+
+def ensure_topic() -> None:
+    """Crée le topic Kafka s'il n'existe pas encore.
+
+    Spark échoue au démarrage si le topic est absent ; on le crée donc ici pour
+    être indépendant de l'ordre de démarrage producer/spark.
+    """
+    from kafka.admin import KafkaAdminClient, NewTopic
+    from kafka.errors import NoBrokersAvailable, TopicAlreadyExistsError
+
+    for _ in range(30):
+        try:
+            admin = KafkaAdminClient(bootstrap_servers=KAFKA_BOOTSTRAP)
+            break
+        except NoBrokersAvailable:
+            print("[spark] Kafka indisponible, nouvelle tentative dans 5 s…")
+            time.sleep(5)
+    else:
+        raise RuntimeError("Kafka injoignable pour créer le topic.")
+
+    try:
+        admin.create_topics([NewTopic(name=TOPIC, num_partitions=1, replication_factor=1)])
+        print(f"[spark] Topic '{TOPIC}' créé.")
+    except TopicAlreadyExistsError:
+        print(f"[spark] Topic '{TOPIC}' déjà présent.")
+    finally:
+        admin.close()
 
 
 def aggregate_ohlc(batch: DataFrame) -> DataFrame:
@@ -157,6 +186,7 @@ def process_batch(batch_df: DataFrame, epoch_id: int) -> None:
 
 def main() -> None:
     ensure_schema()
+    ensure_topic()
 
     spark = (
         SparkSession.builder.appName("stock-stream-processor")

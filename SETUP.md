@@ -40,7 +40,7 @@ docker compose ps
 
 ## 3. Lancer le pipeline batch (Airflow)
 
-1. Ouvrir <http://localhost:8080> → identifiants **admin / admin**.
+1. Ouvrir <http://localhost:8088> → identifiants **admin / admin**.
 2. Le DAG `stock_pipeline` est déjà actif (non *paused*).
 3. Cliquer sur ▶ (**Trigger DAG**) pour lancer immédiatement l'ingestion.
 4. Suivre les tâches : `ensure_schema → ingest_batch → transform`
@@ -51,6 +51,9 @@ docker compose ps
 <http://localhost:8501> — les visualisations apparaissent une fois le DAG terminé.
 Le flux temps réel (zone live + bougies intraday) se remplit grâce aux services `producer` et
 `spark` (déjà démarrés).
+
+> **Spark UI** : <http://localhost:4040> donne accès aux jobs/stages du traitement de flux
+> (disponible uniquement tant que le job `spark` est en cours d'exécution).
 
 ## 5. Vérifier l'idempotence
 
@@ -91,4 +94,4 @@ docker compose down -v
 | Zone live vide | Marché fermé → pas de cotations Finnhub ; revenir aux heures d'ouverture. |
 | `producer` en erreur `FINNHUB_API_KEY manquant` | Renseigner la clé dans `.env`. |
 | Airflow lent à démarrer | Normal au 1ᵉʳ run (migration DB). Attendre puis rafraîchir. |
-| Port déjà utilisé (8080/8501/5432) | Adapter les ports dans `docker-compose.yml`. |
+| Port déjà utilisé (8088/8501/5432) | Adapter les ports dans `docker-compose.yml`. |

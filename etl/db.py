@@ -9,8 +9,6 @@ import os
 import time
 
 import psycopg2
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
 
 
 def _params() -> dict:
@@ -36,8 +34,14 @@ def get_conn(retries: int = 10, delay: int = 3) -> "psycopg2.extensions.connecti
     raise RuntimeError(f"Impossible de joindre Postgres: {last_err}")
 
 
-def get_engine() -> Engine:
-    """Engine SQLAlchemy (utilisé par pandas to_sql / read_sql)."""
+def get_engine():
+    """Engine SQLAlchemy (utilisé par pandas to_sql / read_sql).
+
+    Import paresseux : le job Spark streaming n'utilise que psycopg2 et n'a
+    donc pas SQLAlchemy installé.
+    """
+    from sqlalchemy import create_engine
+
     p = _params()
     url = f"postgresql+psycopg2://{p['user']}:{p['password']}@{p['host']}:{p['port']}/{p['dbname']}"
     return create_engine(url, pool_pre_ping=True)
