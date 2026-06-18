@@ -1,5 +1,5 @@
 -- Initialisation du schéma (DDL). Exécuté par le DAG (tâche ensure_schema) et par
--- le consumer au démarrage — idempotent (IF NOT EXISTS).
+-- le job Spark streaming au démarrage — idempotent (IF NOT EXISTS).
 --
 -- Couches : staging (brut) · core (vérité) · analytics (reporting) · realtime (stream)
 -- NB : la table staging.stock_prices_raw est (re)créée automatiquement par pandas

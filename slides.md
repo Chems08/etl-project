@@ -39,12 +39,12 @@ au même endroit — historique, indicateurs analytiques et cotations live.
 ```
 yfinance ─► ETL batch ─► staging ─► core ─► analytics ─┐
                                                        ├─► Dashboard
-Finnhub ─► Kafka producer ─► topic ─► consumer ─► realtime ─┘
+Finnhub ─► Kafka producer ─► topic ─► Spark Streaming ─► realtime ─┘
        Airflow orchestre le batch + les transformations SQL
 ```
 
 
-Stack : Python · PostgreSQL · Kafka · Airflow · SQL · Streamlit · Docker
+Stack : Python · PostgreSQL · Kafka · Spark · Airflow · SQL · Streamlit · Docker
 
 ---
 
@@ -62,7 +62,7 @@ Stack : Python · PostgreSQL · Kafka · Airflow · SQL · Streamlit · Docker
 ## 4 · Démo en direct — le streaming + dashboard
 
 - **Producer** → topic Kafka `stock_quotes` (vraies cotations Finnhub)
-- **Consumer** → calcule variation + bougies 1 min → `realtime.*`
+- **Spark Structured Streaming** → agrège variation + bougies OHLC 1 min → `realtime.*`
 - **Dashboard Streamlit** (5 visualisations, rafraîchi 5 s) :
   ① chandelier ② moyennes mobiles ③ rendements + volatilité
   ④ tableau de reporting ⑤ cotations live + intraday
@@ -77,7 +77,7 @@ Stack : Python · PostgreSQL · Kafka · Airflow · SQL · Streamlit · Docker
 |-------|-------|--------|
 | Ingestion batch | yfinance | `staging` → `core` |
 | Transformation | SQL (window functions) | `analytics.*` |
-| Streaming | Kafka producer/consumer | `realtime.*` |
+| Streaming | Kafka producer + Spark Structured Streaming | `realtime.*` |
 | Orchestration | Airflow DAG | exécutions planifiées |
 | Visualisation | Streamlit + Plotly | dashboard live |
 

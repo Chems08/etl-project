@@ -7,7 +7,7 @@ Flux de données de bout en bout : **source → ETL batch → couche SQL (ELT) �
 ```mermaid
 flowchart LR
     SRC["📈 Sources<br/>yfinance · Finnhub"]
-    ETL["⚙️ ETL / Streaming<br/>Python · Kafka"]
+    ETL["⚙️ ETL / Streaming<br/>Python · Kafka · Spark"]
     DB[("🗄️ PostgreSQL<br/>staging · core · analytics · realtime")]
     DASH["📊 Dashboard<br/>Streamlit"]
 
@@ -35,17 +35,17 @@ flowchart LR
         RT["realtime.*<br/>live_quotes · ohlc_1min"]
     end
 
-    subgraph STREAM["Streaming (Kafka)"]
-        P["producer.py"]
+    subgraph STREAM["Streaming (Kafka + Spark)"]
+        P["producer.py<br/>(Finnhub → Kafka)"]
         K(["topic: stock_quotes"])
-        C["consumer.py"]
+        SP["spark_consumer.py<br/>Spark Structured Streaming<br/>OHLC 1 min · variation"]
     end
 
     AF["Apache Airflow<br/>DAG stock_pipeline<br/>(schedule · retries · deps)"]
     DASH["Streamlit + Plotly<br/>5 visualisations"]
 
     Y --> E --> ST --> CO --> AN
-    F --> P --> K --> C --> RT
+    F --> P --> K --> SP --> RT
     AF -. orchestre .-> E
     AF -. orchestre .-> AN
     AN --> DASH
@@ -60,13 +60,13 @@ flowchart LR
 | `staging`   | données brutes telles qu'ingérées                 | ETL batch               |
 | `core`      | source de vérité conformée + dédupliquée          | ETL batch (upsert)      |
 | `analytics` | reporting SQL (rendements, MA, volatilité, summary) | transformations ELT     |
-| `realtime`  | sink du flux temps réel                           | consumer Kafka          |
+| `realtime`  | sink du flux temps réel                           | Spark Structured Streaming |
 
 ## Composants (mapping cahier des charges)
 
 1. **ETL Batch** — `etl/batch_ingest.py` : yfinance → nettoyage → `staging` → upsert idempotent `core`.
 2. **ELT SQL** — `sql/02_transforms.sql` : vues + table de reporting sur `core`.
-3. **Streaming** — `streaming/producer.py` (Finnhub → Kafka) + `streaming/consumer.py` (Kafka → `realtime`).
+3. **Streaming** — `streaming/producer.py` (Finnhub → Kafka) + `streaming/spark_consumer.py` (Spark Structured Streaming : Kafka → agrégation OHLC 1 min → `realtime`).
 4. **Orchestration** — `dags/stock_pipeline_dag.py` : DAG Airflow planifié, avec retries et dépendances.
 5. **Dashboard** — `dashboard/app.py` : Streamlit, 5 visualisations rafraîchies.
 

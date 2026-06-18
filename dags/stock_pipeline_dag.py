@@ -5,7 +5,7 @@ DAG `stock_pipeline` : coordonne le pipeline batch + les transformations SQL.
   ensure_schema -> ingest_batch -> transform
 
 Planification quotidienne, 2 retentatives par tâche, dépendances explicites.
-Le streaming (producer/consumer) tourne en service continu, hors de ce DAG.
+Le streaming (producer Kafka + Spark) tourne en service continu, hors de ce DAG.
 """
 from __future__ import annotations
 

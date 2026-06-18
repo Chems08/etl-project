@@ -3,9 +3,9 @@
 ## Prérequis
 
 - **Docker Desktop** (ou Docker Engine + Docker Compose v2) en cours d'exécution.
-- ~4 Go de RAM alloués à Docker (Airflow + Kafka + Postgres).
+- ~6 Go de RAM alloués à Docker (Airflow + Kafka + Spark + Postgres).
 - Une clé API **Finnhub** gratuite : créer un compte sur <https://finnhub.io/register> et copier
-  le token (`API Key`). *Optionnel si vous utilisez le mode simulé.*
+  le token (`API Key`). Obligatoire pour le flux temps réel.
 
 ## 1. Configuration
 
@@ -24,7 +24,10 @@ docker compose up -d --build
 ```
 
 Cela lance : `postgres`, `kafka`, `airflow-init` (initialise la base + l'utilisateur),
-`airflow-webserver`, `airflow-scheduler`, `producer`, `consumer`, `dashboard`.
+`airflow-webserver`, `airflow-scheduler`, `producer`, `spark`, `dashboard`.
+
+> Premier build : l'image `spark` télécharge Spark + le connecteur Kafka
+> (`spark-sql-kafka`), comptez quelques minutes selon le réseau.
 
 Vérifier l'état :
 
@@ -47,7 +50,7 @@ docker compose ps
 
 <http://localhost:8501> — les visualisations apparaissent une fois le DAG terminé.
 Le flux temps réel (zone live + bougies intraday) se remplit grâce aux services `producer` et
-`consumer` (déjà démarrés).
+`spark` (déjà démarrés).
 
 ## 5. Vérifier l'idempotence
 
@@ -63,7 +66,7 @@ docker compose exec postgres psql -U stock -d stockdb -c \
 ```bash
 # Logs d'un service
 docker compose logs -f producer
-docker compose logs -f consumer
+docker compose logs -f spark
 
 # Vérifier le flux live arrivé en base
 docker compose exec postgres psql -U stock -d stockdb -c \

@@ -1,4 +1,4 @@
-"""Helpers de connexion PostgreSQL partagés (ETL, consumer, dashboard, DAG).
+"""Helpers de connexion PostgreSQL partagés (ETL, Spark streaming, dashboard, DAG).
 
 Toutes les coordonnées de connexion proviennent des variables d'environnement
 définies dans docker-compose / .env, pour qu'aucun secret ne soit en dur.

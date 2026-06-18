@@ -113,4 +113,4 @@ intraday = load_live(f"SELECT minute_ts, close FROM realtime.ohlc_1min "
 if not intraday.empty:
     st.line_chart(intraday.sort_values("minute_ts").set_index("minute_ts"))
 else:
-    st.caption("En attente du flux Kafka (producer + consumer)…")
+    st.caption("En attente du flux Kafka (producer + Spark)…")

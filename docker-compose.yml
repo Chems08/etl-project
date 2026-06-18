@@ -5,7 +5,7 @@
 #   kafka      : broker de streaming (mode KRaft, sans Zookeeper)
 #   airflow-*  : orchestration du pipeline batch + transformations SQL
 #   producer   : ingestion du flux live (Finnhub) -> topic Kafka
-#   consumer   : lecture du topic Kafka -> sink Postgres (realtime.*)
+#   spark      : Spark Structured Streaming, Kafka -> sink Postgres (realtime.*)
 #   dashboard  : visualisation Streamlit
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -128,15 +128,24 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # ─── Streaming : consommateur (Kafka -> sink Postgres) ─────────────────────
-  consumer:
-    build: .
-    command: python -u streaming/consumer.py
+  # ─── Streaming : traitement Spark Structured Streaming (Kafka -> Postgres) ──
+  spark:
+    build:
+      context: .
+      dockerfile: streaming/Dockerfile.spark
+    command: >
+      spark-submit
+      --master local[2]
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1
+      --conf spark.jars.ivy=/tmp/.ivy2
+      /app/streaming/spark_consumer.py
     volumes:
       - ./streaming:/app/streaming
       - ./etl:/app/etl
       - ./sql:/app/sql
     environment:
+      PYTHONPATH: /app
+      HOME: /tmp
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: ${KAFKA_TOPIC}
       POSTGRES_USER: ${POSTGRES_USER}
